@@ -1,0 +1,317 @@
+Alright — this is a full **end-to-end DevOps + Web assignment**, so I’ll walk you step-by-step in a **clear, exam-ready + practical way**. You can literally follow this and finish everything.
+
+---
+
+# ✅ 1. Create `index.html` (University Department Web Page)
+
+Save this as **index.html**
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Computer Science Department</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+        }
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        section {
+            padding: 20px;
+        }
+        footer {
+            background: #34495e;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>XYZ University</h1>
+    <p>Excellence in Education and Innovation</p>
+    <h3>Department of Computer Science</h3>
+    <p>Head: Dr. A. Kumar (HOD)</p>
+</header>
+
+<section>
+    <h2>About the Department</h2>
+    <p>
+        The Computer Science Department focuses on cutting-edge technologies,
+        research, and innovation. It offers undergraduate and postgraduate programs.
+    </p>
+</section>
+
+<section>
+    <h2>Courses Offered</h2>
+    <ul>
+        <li><b>Data Structures</b> – Study of efficient data organization</li>
+        <li><b>Operating Systems</b> – Concepts of process and memory management</li>
+        <li><b>Database Systems</b> – SQL and data management</li>
+        <li><b>Machine Learning</b> – AI and predictive modeling</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Faculty</h2>
+    <ul>
+        <li>Dr. A. Kumar – Professor – AI & ML</li>
+        <li>Dr. B. Ravi – Associate Professor – Databases</li>
+        <li>Ms. C. Meena – Assistant Professor – Web Development</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Contact</h2>
+    <p>Address: XYZ University, Chennai</p>
+    <p>Phone: +91 9876543210</p>
+    <p>Email: cs@xyzuniversity.edu</p>
+</section>
+
+<footer>
+    <p>© 2026 XYZ University. All Rights Reserved.</p>
+</footer>
+
+</body>
+</html>
+```
+
+---
+
+# ✅ 2. Push to GitHub (Step-by-step)
+
+### Create repo
+
+1. Go to GitHub
+2. Create repo → `university-webpage`
+
+### In VS Code terminal:
+
+```bash
+git init
+git add .
+git commit -m "Initial commit - webpage"
+git branch -M main
+git remote add origin https://github.com/your-username/university-webpage.git
+git push -u origin main
+```
+
+---
+
+# ✅ 3. Clone Repository (as required)
+
+```bash
+git clone https://github.com/your-username/university-webpage.git
+cd university-webpage
+```
+
+Make any change → then:
+
+```bash
+git add .
+git commit -m "Updated webpage"
+git push
+```
+
+---
+
+# ✅ 4. Dockerize the Application
+
+## Create `Dockerfile`
+
+```dockerfile
+FROM nginx:alpine
+COPY index.html /usr/share/nginx/html/index.html
+EXPOSE 80
+```
+
+---
+
+## Build Docker Image
+
+```bash
+docker build -t university-web .
+```
+
+---
+
+## Run Container
+
+```bash
+docker run -d -p 8080:80 university-web
+```
+
+👉 Open browser:
+`http://localhost:8080`
+
+---
+
+# ✅ 5. Kubernetes Deployment
+
+Create a file: **deployment.yaml**
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: university-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: university
+  template:
+    metadata:
+      labels:
+        app: university
+    spec:
+      containers:
+      - name: university-container
+        image: university-web
+        ports:
+        - containerPort: 80
+```
+
+---
+
+## Create Service → `service.yaml`
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: university-service
+spec:
+  type: NodePort
+  selector:
+    app: university
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30007
+```
+
+---
+
+## Deploy to Kubernetes
+
+```bash
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+```
+
+---
+
+## Check status
+
+```bash
+kubectl get pods
+kubectl get services
+```
+
+👉 Open in browser:
+
+```
+http://localhost:30007
+```
+
+---
+
+# ✅ 6. Jenkins Pipeline Setup
+
+## Install Plugins
+
+* Docker
+* Kubernetes
+* Pipeline
+
+---
+
+## Create Jenkins Pipeline Job
+
+### Pipeline Script:
+
+```groovy
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Clone Repo') {
+            steps {
+                git 'https://github.com/your-username/university-webpage.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t university-web .'
+            }
+        }
+
+        stage('Run Container') {
+            steps {
+                sh 'docker run -d -p 8081:80 university-web || true'
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'kubectl apply -f deployment.yaml'
+                sh 'kubectl apply -f service.yaml'
+            }
+        }
+    }
+}
+```
+
+---
+
+# ✅ 7. Visualize in Docker Desktop
+
+1. Open Docker Desktop
+2. Go to **Containers tab**
+3. You’ll see:
+
+   * Running container
+   * Kubernetes pods
+
+---
+
+# ✅ Final Architecture (Understand This for Viva)
+
+```
+HTML Page → GitHub → Jenkins → Docker → Kubernetes → Browser
+```
+
+---
+
+# ✅ What to Say in Viva (VERY IMPORTANT)
+
+* HTML → creates webpage
+* GitHub → version control
+* Docker → containerization
+* Kubernetes → orchestration
+* Jenkins → CI/CD automation
+
+---
+
+# 🚀 If you want bonus marks:
+
+I can also give you:
+
+* Diagram for this architecture
+* Viva questions + answers
+* Common errors & fixes (very useful during demo)
+
+Just tell me 👍
